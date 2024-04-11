@@ -17,6 +17,7 @@ import {
     PermissionsAndroid,
     BackHandler,
     ImageBackground,
+    Modal,
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -29,7 +30,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
 
-export default function Feedback() {
+export default function Feedback({ navigation }) {
 
     const refRBSheet = useRef();
     const [purpose, setPurpose] = useState(null);
@@ -39,6 +40,7 @@ export default function Feedback() {
     const [imagePath, setImagePath] = useState('');
     const [imageType, setImageType] = useState('');
     const [imageName, setImageName] = useState('');
+    const [backModal, setBackModal] = useState(false);
     const data = [
         { label: 'Report a bug', value: '1' },
         { label: 'Idea or Suggestion', value: '2' },
@@ -49,6 +51,10 @@ export default function Feedback() {
 
     useEffect(() => {
         requestAllPermissions();
+        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+        return () => {
+            BackHandler.remove()
+        };
     }, []);
 
     const requestAllPermissions = () => {
@@ -76,6 +82,42 @@ export default function Feedback() {
         //     requestMultiple([PERMISSIONS.IOS.CAMERA, PERMISSIONS.IOS.PHOTO_LIBRARY, PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY,]).then((statuses) => {
         //     });
         // }
+    }
+
+    const handleBackButtonClick = async () => {
+        setBackModal(true);
+        return true;
+    }
+
+    const Back_Modal = () => {
+        return (
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={backModal}
+                onRequestClose={() => {
+                    //console.log(" modal",visible);
+                }}
+            >
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.3)' }}>
+                    <View style={{ width: '75%', minHeight: AdjustFontSize(150), backgroundColor: '#fff', borderRadius: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5 }}>
+                        <TouchableOpacity onPress={() => setBackModal(false)} style={{ width: AdjustFontSize(27), height: AdjustFontSize(27), justifyContent: 'center', backgroundColor: '#fff', borderRadius: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5, position: 'absolute', right: 0, marginRight: -15, marginTop: -10 }}>
+                            <Image style={{ width: AdjustFontSize(12), height: AdjustFontSize(12), alignSelf: 'center', tintColor: 'rgba(0,0,0,0.4)', }} source={require('./assets/close.png')} />
+                        </TouchableOpacity>
+                        <View style={{ width: '80%', alignSelf: 'center', marginVertical: AdjustFontSize(20) }}>
+                            <Text style={{ fontSize: AdjustFontSize(15), fontWeight: '500', color: 'rgba(0,0,0,0.7)', marginTop: 15, alignSelf: 'center', textAlign: 'center' }}>{'Are you sure want to leave?'}</Text>
+                            <Text style={{ fontSize: AdjustFontSize(12), fontWeight: '400', color: 'rgba(0,0,0,0.7)', marginTop: 5, alignSelf: 'center', textAlign: 'center' }}>{'If you discard, you will lose your changes'}</Text>
+                            <TouchableOpacity onPress={() => setBackModal(false)} style={{ width: '100%', height: AdjustFontSize(35), backgroundColor: '#4062A3', borderRadius: 5, marginTop: AdjustFontSize(10), alignSelf: 'center', justifyContent: 'center' }}>
+                                <Text style={{ fontSize: AdjustFontSize(12), fontWeight: '600', color: '#fff', alignSelf: 'center' }}>{'CONTINUE EDITING'}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => BackHandler.exitApp()} style={{ width: '100%', height: AdjustFontSize(35), backgroundColor: '#fff', borderRadius: 5, borderWidth: 1, borderColor: '#4062A3', marginTop: AdjustFontSize(5), alignSelf: 'center', justifyContent: 'center' }}>
+                                <Text style={{ fontSize: AdjustFontSize(12), fontWeight: '700', color: '#4062A3', alignSelf: 'center' }}>{'DISCARD'}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+        )
     }
 
     const selectFromGallary = () => {
@@ -224,11 +266,11 @@ export default function Feedback() {
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : ""} style={{ flex: 1 }}>
                 <Header backgroundColor={'#fff'} />
                 <View style={{ width: '100%', height: AdjustFontSize(40), justifyContent: 'center' }}>
-                    <Text style={{ fontSize: AdjustFontSize(15), fontWeight: 'bold', color: '#000', alignSelf: 'center' }}>{'Give Feedback'}</Text>
+                    <Text onPress={() => setBackModal(true)} style={{ fontSize: AdjustFontSize(15), fontWeight: 'bold', color: '#000', alignSelf: 'center' }}>{'Give Feedback'}</Text>
                 </View>
                 <ScrollView>
                     <View style={{ flex: 1, marginHorizontal: AdjustFontSize(15), marginVertical: AdjustFontSize(20) }}>
-                        <View style={styles.container}>
+                        <View style={styles.container}>{Back_Modal()}
                             {renderLabel()}
                             <Dropdown
                                 style={[styles.dropdown, isFocus && { borderColor: '#4062A3' }]}
