@@ -53,7 +53,7 @@ export default function Feedback({ navigation }) {
         requestAllPermissions();
         BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
         return () => {
-            BackHandler.remove()
+            BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
         };
     }, []);
 
