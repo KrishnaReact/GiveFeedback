@@ -266,7 +266,7 @@ export default function Feedback({ navigation }) {
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : ""} style={{ flex: 1 }}>
                 <Header backgroundColor={'#fff'} />
                 <View style={{ width: '100%', height: AdjustFontSize(40), justifyContent: 'center' }}>
-                    <Text onPress={() => setBackModal(true)} style={{ fontSize: AdjustFontSize(15), fontWeight: 'bold', color: '#000', alignSelf: 'center' }}>{'Give Feedback'}</Text>
+                    <Text onPress={() => navigation.navigate('Videos')} style={{ fontSize: AdjustFontSize(15), fontWeight: 'bold', color: '#000', alignSelf: 'center' }}>{'Give Feedback'}</Text>
                 </View>
                 <ScrollView>
                     <View style={{ flex: 1, marginHorizontal: AdjustFontSize(15), marginVertical: AdjustFontSize(20) }}>
