@@ -83,7 +83,7 @@ export default function Videos({ navigation }) {
                     <Video
                         paused={puased}
                         source={{
-                            uri: 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4?_=1',
+                            uri: 'https://alignmentapi.alignmentconsultancy.com/public/uploads/files/20770858-hd_1080_1920_30fps.mp4',
                         }}
                         ref={ref}
                         onProgress={x => {
